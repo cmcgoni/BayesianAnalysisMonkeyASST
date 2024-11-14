@@ -90,7 +90,7 @@ end
 
 for XZ = 1:length(Subjects);
     [Sessionlength{XZ}, SPlike{XZ}, SPalike{XZ}, SHlike{XZ}, COlike{XZ}, Phases{XZ},trialsperphase{XZ}] = getSigm(outpt,sz,XZ,dates); %%%%%Put all four in competition together like in mouse%%%%%
-    [normSP{XZ},normSPa{XZ}, normSH{XZ},normCO{XZ}] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates);
+    [normSP{XZ},normSPa{XZ}, normSH{XZ},normCO{XZ},propSP{XZ},propSPa{XZ},propSH{XZ},propCO{XZ}] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates);
 end
 
 %inputs to pltBayes: posterior values (norm_), the trial number where each
@@ -108,9 +108,10 @@ end
 for XZ = 1:length(Subjects);
     %separate loops for graphing and analysis
     numsess = 1; %change this number to graph a different number of sessions
-    session = 7; 
+    session = 21; 
 %   pltBayes_shuffled(normSP,normSH,normCO,Phases,XZ,numsess,ci);
-    pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session);
+    pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO);
+    %add function for plotting bar graphs
 end
 %%%%Just have bars showing the periods when the animals are using a
 %%%%strategy instead of the noisiness of the trial by trial data

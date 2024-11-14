@@ -2,7 +2,7 @@
 %session length
 %outputs from anaBayes: normalized posteriors, or b-values, for spatial
 %(normSP), shape (normSH), and color (normCO) strategies
-function [normSP,normSPa, normSH,normCO] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates)
+function [normSP,normSPa, normSH,normCO,propSP,propSPa,propSH,propCO] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates)
 %Annotate inputs and outputs%
     normSP = {};
     normSH = {};
@@ -58,5 +58,9 @@ function [normSP,normSPa, normSH,normCO] = anaBayes(XZ, Sessionlength, SPlike, S
     normSPa{m} = noSPa;
     normSH{m} = noSH;
     normCO{m} = noCO;
+    propSP{m} = sum(normSP{m}>0.6)./SL;
+    propSPa{m} = sum(normSPa{m}>0.6)./SL;
+    propSH{m} = sum(normSH{m}>0.6)./SL;
+    propCO{m} = sum(normCO{m}>0.6)./SL;
     end
 end
