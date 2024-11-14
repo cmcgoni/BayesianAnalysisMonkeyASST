@@ -20,6 +20,34 @@ function [Sessionlength, SPlike, SPalike, SHlike, COlike, Phases, trialsperphase
         if SL < 3
             continue
         end
+%%Indexes phases
+        sess_1_phase = categorical(session.Var1); %isolates phase numbers
+        sess_1_phase = double(sess_1_phase); %turns this categorical into a numerical array so I can use the find function
+        
+        SDidx   = find(sess_1_phase == 0, 1, 'first'); %stores the row/trial number where the each new phase begins
+        SRidx   = find(sess_1_phase == 1, 1, 'first');
+        CDidx   = find(sess_1_phase == 2, 1, 'first');
+        CRidx   = find(sess_1_phase == 3, 1, 'first');
+        IDSidx  = find(sess_1_phase == 4, 1, 'first');
+        IDRidx  = find(sess_1_phase == 5, 1, 'first');
+        EDSidx  = find(sess_1_phase == 6, 1, 'first');
+        EDRidx  = find(sess_1_phase == 7, 1, 'first');
+
+        phasestart = [SDidx;SRidx;CDidx;CRidx;IDSidx;IDRidx;EDSidx;EDRidx];
+        Phases{j} = phasestart;
+
+        SD = sum(sess_1_phase == 0);
+        SR = sum(sess_1_phase == 1);
+        CD = sum(sess_1_phase == 2);
+        CR = sum(sess_1_phase == 3);
+        IDS = sum(sess_1_phase == 4);
+        IDR = sum(sess_1_phase == 5);   
+        EDS = sum(sess_1_phase == 6);
+        EDR = sum(sess_1_phase == 7);
+
+        trials = [SD, SR, CD, CR, IDS, IDR, EDS, EDR];
+        trialsperphase{j} = trials;
+
         sess_1_spatialcons  = zeros(SL,1); %initializes matrix for the consecutive for loop below
         
         %This produces a logical where 1 indicates 2 consecutive choices
@@ -115,7 +143,7 @@ function [Sessionlength, SPlike, SPalike, SHlike, COlike, Phases, trialsperphase
         SigmSH(rsh) = invsh(rsh); % on trials where non-consistent choices are made, 
         SHlike{j} = SigmSH;
         % replace likelihood with the inverse of the previous likelihood
-    
+
         sess_1_color        = categorical(session.Var4); %isolates color strategy
         sess_1_colorcons    = zeros(SL,1); %initializes matrix for the consecutive for loop below
         
@@ -140,35 +168,15 @@ function [Sessionlength, SPlike, SPalike, SHlike, COlike, Phases, trialsperphase
         invco       = 1-cosig; % inverse likelihood, shifted down by one cell
         rco         = sess_1_colorcons == 0; % indexes trials where consecutive streak ends
         SigmCO(rco) = invco(rco); % on trials where non-consistent choices are made,
+        
+        if max(sess_1_phase) > 2
+            SigmCO(1:CRidx) = 0; %Setting equal to zero for the first two phases since color is not an option
+        else
+            SigmCO(1:end) = 0;
+        end
+
         COlike{j} = SigmCO;
         % replace likelihood with the inverse of the previous likelihood
-    
-        sess_1_phase = categorical(session.Var1); %isolates phase numbers
-        sess_1_phase = double(sess_1_phase); %turns this categorical into a numerical array so I can use the find function
-        
-        SDidx   = find(sess_1_phase == 0, 1, 'first'); %stores the row/trial number where the each new phase begins
-        SRidx   = find(sess_1_phase == 1, 1, 'first');
-        CDidx   = find(sess_1_phase == 2, 1, 'first');
-        CRidx   = find(sess_1_phase == 3, 1, 'first');
-        IDSidx  = find(sess_1_phase == 4, 1, 'first');
-        IDRidx  = find(sess_1_phase == 5, 1, 'first');
-        EDSidx  = find(sess_1_phase == 6, 1, 'first');
-        EDRidx  = find(sess_1_phase == 7, 1, 'first');
-
-        phasestart = [SDidx;SRidx;CDidx;CRidx;IDSidx;IDRidx;EDSidx;EDRidx];
-        Phases{j} = phasestart;
-
-        SD = sum(sess_1_phase == 0);
-        SR = sum(sess_1_phase == 1);
-        CD = sum(sess_1_phase == 2);
-        CR = sum(sess_1_phase == 3);
-        IDS = sum(sess_1_phase == 4);
-        IDR = sum(sess_1_phase == 5);   
-        EDS = sum(sess_1_phase == 6);
-        EDR = sum(sess_1_phase == 7);
-
-        trials = [SD, SR, CD, CR, IDS, IDR, EDS, EDR];
-        trialsperphase{j} = trials;
 
 
 
