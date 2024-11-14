@@ -16,7 +16,7 @@ function pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session)
         legend('location','northeastoutside');
         labels = {'SD','SR','CD','CR','IDS','IDR','EDS','EDR'};
         A = numel(Phases{1,XZ}{1,n+session});
-        xline(Phases{1,XZ}{1,n+7},'-',labels(1:A));
+        xline(Phases{1,XZ}{1,n+session},'-',labels(1:A));
         ylabel('b-value');
         xlabel('trial');
         title(['Subject',sprintf('%d',XZ) 'Session',sprintf('%d',n+session)]); %want to add in titling with the actual subject ID rather than just the ##
