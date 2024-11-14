@@ -107,9 +107,10 @@ end
 
 for XZ = 1:length(Subjects);
     %separate loops for graphing and analysis
-    numsess = 2; %change this number to graph a different number of sessions
+    numsess = 1; %change this number to graph a different number of sessions
+    session = 7; 
 %   pltBayes_shuffled(normSP,normSH,normCO,Phases,XZ,numsess,ci);
-    pltBayes(normSP,normSH,normCO,Phases,XZ,numsess,sz);
+    pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session);
 end
 %%%%Just have bars showing the periods when the animals are using a
 %%%%strategy instead of the noisiness of the trial by trial data
