@@ -23,7 +23,7 @@
 
 %Intialization: at the beginning of each phase, priors and likelihoods are
 %reset to a "hypothesis-neutral" value where each strategy is equal
-%% Load data 
+%% Initial data import
 clear all
 
 path = uigetdir('/Users/user/');
@@ -35,6 +35,9 @@ for XX = 1:length(names)
 %     fields = string(field); %converts this name to a string that allows us to call the table within each structure
     Subjects{XX} = temp;%this will work to run through a single cohort's data. How can I change this so it accepts the file names directly from the files variable?
 end
+save(Subjects);
+%Should add save function so that after initial importing, I can directly
+%load a matlab file with the imported files. 
 
 %getBayes function handles data pre-processing (specific for our data input
 %structure). 
@@ -45,7 +48,9 @@ end
 %input to getBayes: full data file for a single subject (x)
 %output from getBayes are formatted single sessions (output) as well as the length
 %in number of trials of each session (sz)
-%% GetBayes preprocessing
+%% GetBayes preprocessing and loading after intiial import
+load Subjects;
+
 for XY = 1:length(Subjects);
     x = Subjects{1,XY}; %previous step of unnesting the subject tables from the structure necessary for this step
     [outpt{XY},sz{XY},rewards{XY},dates{XY}] = getBayes(x); %generates nested cell array: array of subjects.array of individual sessions 
@@ -108,7 +113,7 @@ end
 for XZ = 1:length(Subjects);
     %separate loops for graphing and analysis
     numsess = 1; %change this number to graph a different number of sessions
-    session = 21; 
+    session = 27; 
 %   pltBayes_shuffled(normSP,normSH,normCO,Phases,XZ,numsess,ci);
     pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO);
     %add function for plotting bar graphs
