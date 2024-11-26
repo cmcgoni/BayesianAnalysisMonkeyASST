@@ -29,15 +29,10 @@ clear all
 path = uigetdir('/Users/user/');
 files = dir(fullfile(path,'**','*.xlsx'));
 names = {files.name};
-for XX = 1:length(names)
-    temp = readtable(fullfile('DataFiles', (num2str(names{XX}))));
-%     field = fieldnames(temp); %extracts the name of the variable stored within the structure
-%     fields = string(field); %converts this name to a string that allows us to call the table within each structure
-    Subjects{XX} = temp;%this will work to run through a single cohort's data. How can I change this so it accepts the file names directly from the files variable?
+for XX = 37:48
+    temp = readtable(fullfile('DataFiles', (num2str(names{XX}))),'ReadRowNames',true);
+    Subjects{XX} = temp;
 end
-save(Subjects);
-%Should add save function so that after initial importing, I can directly
-%load a matlab file with the imported files. 
 
 %getBayes function handles data pre-processing (specific for our data input
 %structure). 
@@ -49,12 +44,16 @@ save(Subjects);
 %output from getBayes are formatted single sessions (output) as well as the length
 %in number of trials of each session (sz)
 %% GetBayes preprocessing and loading after intiial import
-load Subjects;
+% clear variables
+% load('Subjects.mat');
 
-for XY = 1:length(Subjects);
+for XY = 37:48
     x = Subjects{1,XY}; %previous step of unnesting the subject tables from the structure necessary for this step
     [outpt{XY},sz{XY},rewards{XY},dates{XY}] = getBayes(x); %generates nested cell array: array of subjects.array of individual sessions 
 end
+
+%I should then save these variables so I don't have to access the full,
+%unprocessed files
 %%
 
 %getSigm produces simgoidal likelihood values
@@ -93,9 +92,9 @@ end
 %     end
 %% Calculate sigmoidal likelihood and bayesian posteriors
 
-for XZ = 1:length(Subjects);
+for XZ = 37:48
     [Sessionlength{XZ}, SPlike{XZ}, SPalike{XZ}, SHlike{XZ}, COlike{XZ}, Phases{XZ},trialsperphase{XZ}] = getSigm(outpt,sz,XZ,dates); %%%%%Put all four in competition together like in mouse%%%%%
-    [normSP{XZ},normSPa{XZ}, normSH{XZ},normCO{XZ},propSP{XZ},propSPa{XZ},propSH{XZ},propCO{XZ}] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates);
+    [normSP{XZ},normSPa{XZ}, normSH{XZ},normCO{XZ},propSP{XZ},propSPa{XZ},propSH{XZ},propCO{XZ},propNS{XZ}] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates);
 end
 
 %inputs to pltBayes: posterior values (norm_), the trial number where each
