@@ -29,8 +29,8 @@ clear all
 path = uigetdir('/Users/user/');
 files = dir(fullfile(path,'**','*.xlsx'));
 names = {files.name};
-for XX = 37:48
-    temp = readtable(fullfile('DataFiles', (num2str(names{XX}))),'ReadRowNames',true);
+for XX = 1:length(files);
+    temp = readtable(fullfile('DataFiles', (num2str(names{XX}))),'ReadVariableNames',true);
     Subjects{XX} = temp;
 end
 
@@ -45,11 +45,11 @@ end
 %in number of trials of each session (sz)
 %% GetBayes preprocessing and loading after intiial import
 % clear variables
-% load('Subjects.mat');
+%load('matlab.mat');
 
-for XY = 37:48
-    x = Subjects{1,XY}; %previous step of unnesting the subject tables from the structure necessary for this step
-    [outpt{XY},sz{XY},rewards{XY},dates{XY}] = getBayes(x); %generates nested cell array: array of subjects.array of individual sessions 
+for XZ = 1:length(Subjects)
+    x = Subjects{1,XZ}; %previous step of unnesting the subject tables from the structure necessary for this step
+    [outpt{XZ},sz{XZ},rewards{XZ},dates{XZ}] = getBayes(x); %generates nested cell array: array of subjects.array of individual sessions 
 end
 
 %I should then save these variables so I don't have to access the full,
@@ -92,7 +92,7 @@ end
 %     end
 %% Calculate sigmoidal likelihood and bayesian posteriors
 
-for XZ = 37:48
+for XZ = 1:length(Subjects)
     [Sessionlength{XZ}, SPlike{XZ}, SPalike{XZ}, SHlike{XZ}, COlike{XZ}, Phases{XZ},trialsperphase{XZ}] = getSigm(outpt,sz,XZ,dates); %%%%%Put all four in competition together like in mouse%%%%%
     [normSP{XZ},normSPa{XZ}, normSH{XZ},normCO{XZ},propSP{XZ},propSPa{XZ},propSH{XZ},propCO{XZ},propNS{XZ}] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates);
 end
@@ -112,7 +112,7 @@ end
 for XZ = 1:length(Subjects);
     %separate loops for graphing and analysis
     numsess = 1; %change this number to graph a different number of sessions
-    session = 27; 
+    session = 30; 
 %   pltBayes_shuffled(normSP,normSH,normCO,Phases,XZ,numsess,ci);
     pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO);
     %add function for plotting bar graphs
@@ -124,11 +124,14 @@ end
 figure
 hold on
 for XZ = 1:length(Subjects)
-    for i = 1:131
-        plot(ci{1,XZ}{1,i});
+    for i = 1:3;
+        plot(ci{1,XZ}{1,i},'color',[.7 .7 .7]);
     end
 end
-ylim([0 1])
+yline(0.6,'-','color','r','LineWidth',3);
+xlabel('trial');
+ylabel('b-value');
+ylim([0 1]);
 %% Shuffle plot
 plot(f,'displayname','shuffled');
 hold on

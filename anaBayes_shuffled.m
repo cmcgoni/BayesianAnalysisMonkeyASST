@@ -4,15 +4,17 @@
 %(normSP), shape (normSH), and color (normCO) strategies
 function [ShSpPost, ShSpaPost, ShShPost, ShCoPost, ci] = anaBayes_shuffled(XZ, Sessionlength, ShSpatial, ShAltern, ShShape, ShColor, Phases)
 %Annotate inputs and outputs%
-    ShSpPost = cell(1,131);
-    ShSpaPost = cell(1,131);
-    ShShPost = cell(1,131);
-    ShCoPost = cell(1,131);
+    ShSpPost = {};
+    ShSpaPost = {};
+    ShShPost = {};
+    ShCoPost = {};
+    
+    st = [28 29 30];
 
-    for m = 1:131
+    for m = 1:length(st)
         for l = 1:100
-            SL = Sessionlength{1,XZ}{1,m};
-            phasestart = Phases{1,XZ}{1,m};
+            SL = Sessionlength{1,XZ}{1,st(m)};
+            phasestart = Phases{1,XZ}{1,st(m)};
             SigmSP = ShSpatial{1,XZ}{1,m}(:,l);
             SigmSPa = ShAltern{1,XZ}{1,m}(:,l);
             SigmSH = ShShape{1,XZ}{1,m}(:,l);

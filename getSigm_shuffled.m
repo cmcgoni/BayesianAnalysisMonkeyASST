@@ -4,16 +4,18 @@
 %likelihood values for each trial for spatial (SPlike), shape (SHlike), and
 %color (COlike), and the trial number where each phase starts (Phases)
 function [ShSpatial, ShAltern, ShShape, ShColor] = getSigm_shuffled(outpt,XZ,Phases, trialsperphase,Sessionlength)
-    ShSpatial = cell(1,131);
-    ShAltern = cell(1,131);
-    ShShape = cell(1,131);
-    ShColor = cell(1,131);
+    ShSpatial = {};
+    ShAltern = {};
+    ShShape = {};
+    ShColor = {};
 
-    for j = 1:131 
-        SL = Sessionlength{1,XZ}{1,j};
-        phase = Phases{1,XZ}{1,j}(:,:);
+    st = [28 29 30]; %specific sessions to run shuffle on (could generate random sessions here, probalby would be better)
+
+    for j = 1:length(st)
+        SL = Sessionlength{1,XZ}{1,st(j)};
+        phase = Phases{1,XZ}{1,st(j)}(:,:);
         for l = 1:100 %need to move up to 100 ultimately, but it takes a while to run
-            session = cell2table(outpt{1,XZ}{j}); 
+            session = cell2table(outpt{1,XZ}{st(j)}); 
             spatial = categorical(session.Var2);
             shape = categorical(session.Var3);
             color = categorical(session.Var4);
@@ -23,7 +25,7 @@ function [ShSpatial, ShAltern, ShShape, ShColor] = getSigm_shuffled(outpt,XZ,Pha
             trials = {};
             random = {};
             for i = 1:(b-1)
-                idx = trialsperphase{1,XZ}{j}(i+1); %number of trials
+                idx = trialsperphase{1,XZ}{st(j)}(i+1); %number of trials
                 %randomizes order of indices -- need to apply indices to each range of trial numbers in a given phase
                 tstidx = (phase(i)) : (phase(i+1));
                 trials{i} = tstidx;
