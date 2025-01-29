@@ -1,7 +1,7 @@
 %inputs to pltBayes: posterior values (norm_), the trial number where each
 %phase starts, and the number of sessions you wish to graph from each
 %subject (numsess)
-function pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO)
+function [strat] = pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO)
      for n = 1:numsess %choose sessions to plot. 131 total sessions per subject in this cohort. ~40 of them are in pre-drinking period
         if sz{1,XZ}(n+session) <3
             continue
@@ -30,8 +30,10 @@ function pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,pro
         monkey = [cell2mat(propSP{1,XZ});cell2mat(propSPa{1,XZ});cell2mat(propSH{1,XZ});cell2mat(propCO{1,XZ})];
         nostrat = [];
         for i = 1:width(monkey)
-            nostrat(i) = 1-(sum(monkey(:,i)));
+            strat(i) = sum(monkey(:,i));
+            nostrat(i) = 1-strat(i);
         end
+        strat; 
         final = [monkey;nostrat];
         bar(final.','stacked');
         hold on;

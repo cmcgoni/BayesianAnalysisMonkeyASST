@@ -30,7 +30,7 @@ path = uigetdir('/Users/user/');
 files = dir(fullfile(path,'**','*.xlsx'));
 names = {files.name};
 for XX = 1:length(files);
-    temp = readtable(fullfile('DataFiles', (num2str(names{XX}))),'ReadVariableNames',true);
+    temp = readtable(fullfile('DataFiles\PostDrink', (num2str(names{XX}))),'ReadVariableNames',true);
     Subjects{XX} = temp;
 end
 
@@ -44,16 +44,11 @@ end
 %output from getBayes are formatted single sessions (output) as well as the length
 %in number of trials of each session (sz)
 %% GetBayes preprocessing and loading after intiial import
-% clear variables
-%load('matlab.mat');
 
 for XZ = 1:length(Subjects)
     x = Subjects{1,XZ}; %previous step of unnesting the subject tables from the structure necessary for this step
     [outpt{XZ},sz{XZ},rewards{XZ},dates{XZ}] = getBayes(x); %generates nested cell array: array of subjects.array of individual sessions 
 end
-
-%I should then save these variables so I don't have to access the full,
-%unprocessed files
 %%
 
 %getSigm produces simgoidal likelihood values
@@ -91,8 +86,14 @@ end
 %         end
 %     end
 %% Calculate sigmoidal likelihood and bayesian posteriors
+% clear all;
+% load ("ASSTdata.mat");
+% load ("ASSTpostdrink.mat");
+% Note that we don't have post-drinking data for monkeys 14.3 and 17.11.
+% "Stand in" data is being used, which is just copied data from the 14.2
+% and 17.10 in order to keep matlab-assigned numbers consistent
 
-for XZ = 1:length(Subjects)
+for XZ = 1:length(outpt)
     [Sessionlength{XZ}, SPlike{XZ}, SPalike{XZ}, SHlike{XZ}, COlike{XZ}, Phases{XZ},trialsperphase{XZ}] = getSigm(outpt,sz,XZ,dates); %%%%%Put all four in competition together like in mouse%%%%%
     [normSP{XZ},normSPa{XZ}, normSH{XZ},normCO{XZ},propSP{XZ},propSPa{XZ},propSH{XZ},propCO{XZ},propNS{XZ}] = anaBayes(XZ, Sessionlength, SPlike, SPalike, SHlike, COlike, Phases,dates);
 end
@@ -102,25 +103,31 @@ end
 %subject (numsess)
 
 %% Shuffled data work
-for XZ = 1:length(Subjects)
+for XZ = 1:length(outpt)
     [ShSpatial{XZ}, ShAltern{XZ}, ShShape{XZ}, ShColor{XZ}] = getSigm_shuffled(outpt,XZ,Phases, trialsperphase,Sessionlength);
     [ShSpPost{XZ}, ShSpaPost{XZ}, ShShPost{XZ}, ShCoPost{XZ},ci{XZ}] = anaBayes_shuffled(XZ, Sessionlength, ShSpatial, ShAltern, ShShape, ShColor, Phases);
 end
 
 %% Plotting function
 
-for XZ = 1:length(Subjects);
+for XZ = 1:length(outpt);
     %separate loops for graphing and analysis
     numsess = 1; %change this number to graph a different number of sessions
-    session = 30; 
+    session = 4; 
 %   pltBayes_shuffled(normSP,normSH,normCO,Phases,XZ,numsess,ci);
-    pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO);
-    %add function for plotting bar graphs
+    [strat{XZ}] = pltBayes(normSP,normSPa, normSH,normCO,Phases,XZ,numsess,sz,session,propSP,propSPa,propSH,propCO);
 end
+%% 
+for i = 1:length(strat)
+    figure(i);
+    qqplot(strat{1,i});
+end
+%Need to find summary statistic for how normal a distribution is (like
+%degree to which)
 %%%%Just have bars showing the periods when the animals are using a
 %%%%strategy instead of the noisiness of the trial by trial data
 
-%%
+%% Shuffled plot function - plotting upper CI vs our 0.6 threshold
 figure
 hold on
 for XZ = 1:length(Subjects)

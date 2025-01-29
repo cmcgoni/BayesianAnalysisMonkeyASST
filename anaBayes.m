@@ -9,7 +9,7 @@ function [normSP,normSPa, normSH,normCO,propSP,propSPa,propSH,propCO,propNS] = a
     normSPa = {};
     normCO = {};
 
-    for m = 1:length(dates{1,XZ})
+    for m = 1:length(Phases{1,XZ})
         if isempty(Phases{1,XZ}{1,m})
             continue
         end
