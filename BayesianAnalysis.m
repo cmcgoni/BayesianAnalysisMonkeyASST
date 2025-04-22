@@ -88,7 +88,7 @@ end
 %% Calculate sigmoidal likelihood and bayesian posteriors
 % clear all;
 % load ("ASSTdata.mat");
-% load ("ASSTpostdrink.mat");
+load ("ASSTpostdrink.mat");
 % Note that we don't have post-drinking data for monkeys 14.3 and 17.11.
 % "Stand in" data is being used, which is just copied data from the 14.2
 % and 17.10 in order to keep matlab-assigned numbers consistent
@@ -101,6 +101,12 @@ end
 %inputs to pltBayes: posterior values (norm_), the trial number where each
 %phase starts, and the number of sessions you wish to graph from each
 %subject (numsess)
+%% 
+for XX = 1:length(outpt)
+    elementCounts = cellfun(@numel, Phases{1,XX});  % Count elements in each cell
+
+    averageElements{XX} = mean(elementCounts);  % Calculate average
+end
 
 %% Shuffled data work
 for XZ = 1:length(outpt)
