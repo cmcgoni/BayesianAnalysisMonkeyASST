@@ -87,8 +87,8 @@ end
 %     end
 %% Calculate sigmoidal likelihood and bayesian posteriors
 % clear all;
-% load ("ASSTdata.mat");
-load ("ASSTpostdrink.mat");
+% load ("ASSTpostdrink.mat");
+load ("ASSTdata.mat");
 % Note that we don't have post-drinking data for monkeys 14.3 and 17.11.
 % "Stand in" data is being used, which is just copied data from the 14.2
 % and 17.10 in order to keep matlab-assigned numbers consistent
@@ -107,7 +107,7 @@ performance = [0 1 1 0 0 1 0 1 0 0 0 0 0 1 1 1 0 0 1 1 1 1 1 0 1 0 0 0 0 0 0 0 1
 drink = [4 NaN 3 1 2 3 NaN 4 2 4 NaN 3 1 4 1 1 1 2 2 4 2 1 3 2 2 3 4 1 1 3 2 3 3 2 1 1 1 1 3 1 1 1 4 4 1 4 1 4]; %1 = LD, 2 = BD, 3 = HD, 4 = VHD, NaN = control animal
 %% Calculate average stage reached
 for XX = 1:length(outpt)
-    elementCounts = cellfun(@numel, Phases{1,XX});  % Count elements in each cell
+    elementCounts = cellfun(@numel, Phases{1,XX}(1,end-9:end));  % Count elements in each cell; only using last ten sessions for pre-drinking data to avoid effects of training rate
 
     averageElements{XX} = mean(elementCounts);  % Calculate average
 end
